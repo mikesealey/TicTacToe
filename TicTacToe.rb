@@ -174,8 +174,8 @@ class Player
     def name()
         @name
     end
-    def marker()
-        @marker
+    def marker
+        @marker = name[0]
     end
     def tiles()
         @tiles
@@ -189,15 +189,19 @@ def greeting()
     $player_one_name = gets.chomp
     $player_one = Player.new($player_one_name)
     send(:puts, "Welcome #{$player_one.name}.")
+    send(:puts, $player_one.display_attributes())
     
     send(:puts, "Please enter the name of player 2.")
-    send(:puts, "In the event that both players have the same first marker, defaults markers O and X will be assigned") ## This doesn't currently work 31st Jan 2023
+    send(:puts, "In the event that both players have the same first initial, default markers O and X will be assigned") ## This doesn't currently work 31st Jan 2023
 
     $player_two_name = gets.chomp
     $player_two = Player.new($player_two_name)
+    send(:puts, $player_two.display_attributes())
 
     send(:puts, "Welcome #{$player_two.name}.")
 
+    # Not currently working
+    # And I don't know why
     if $player_one.marker == $player_two.marker
         $player_one.marker = "X"
         $player_two.marker = "O"
@@ -205,15 +209,19 @@ def greeting()
     end
 
     send(:puts, "Randomly decinding who goes first...")
-    $first_turn = rand().round()
-    if $first_turn == 0
+    $first_turn = rand(2)
+    if $first_turn.even?
         send(:puts, "#{$player_one.name} will make the first move!")
         $next_turn_selector = $player_one
-    else
+    elsif $first_turn.odd?
         send(:puts, "#{$player_two.name} will make the first move!")
         $next_turn_selector = $player_one
+    else
+        puts "$first_turn was neither odd nor even, someone done goof'd up."
     end
 end
+
+
 
 def player_one_move()
     puts "#{$player_one.name}, please enter the number of the tile you wish to claim"
@@ -241,45 +249,12 @@ def player_two_move()
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-#until win condition met, or no space left available
- # No win conditions are currently set 31st Jan 2023
-
-#check_remaining_tiles($board)
-
-=begin def alternator_switch()
-    if $next_turn_selector = $player_one
-        puts "Player one make move"
-        player_one_move()
-        $next_turn_selector = $player_two
-        puts "next move changed to player two"
-    elsif $next_turn_selector = $player_two
-        puts "Player two make move"
-        player_two_move()
-        $next_turn_selector = $player_one
-        puts "next move changed to player oneS"
-    else
-        puts "Something Else"
-    end
-end
-=end
-
 greeting()
 show_board($board)
 
-puts "class of remaining_tiles is "
-puts $remaining_tiles.class
+
+
+
 
 while check_remaining_tiles($board) > 0 && win_condition_met($board) == false
     if $first_turn.even?
@@ -289,14 +264,13 @@ while check_remaining_tiles($board) > 0 && win_condition_met($board) == false
         player_two_move()
         $first_turn += 1
     end
-
-
-
     show_board($board)
     check_remaining_tiles($board)
     win_condition_met($board)
 end
-
+if check_remaining_tiles($board) == 0 && win_condition_met($board) == false
+    puts "Looks like it's a draw..."
+end
 
 
 
