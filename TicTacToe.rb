@@ -171,11 +171,10 @@ class Player
         puts marker
         puts "tiles claimed #{tiles}"
     end
+    attr_reader :marker
+    attr_writer :marker
     def name()
         @name
-    end
-    def marker
-        @marker = name[0]
     end
     def tiles()
         @tiles
